@@ -1,3 +1,8 @@
+---
+name: ai-plc-inception
+description: Use this after collection to decompose the goal into backlog.yaml tasks, dependencies, and optional sublayers.
+---
+
 > 🏷️ **Project:** [AI-PLC Project](https://www.notion.so/268b133701be808a81bce066ce075281)
 > **Type:** command
 > **Context:** AI-PLC Stage 2 — Inception。Goal分析と再帰的分解ステージ。Intent + Context Storeを受け取り、Decomposition Strategyに基づきBacklog（タスク定義）とSub-Agent Registry（SubLayer群）を生成する。

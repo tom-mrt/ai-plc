@@ -2,34 +2,39 @@
 set -euo pipefail
 
 # AI-PLC Universal Installer
-# Detects environment (Claude Code / Cursor) and runs the appropriate installer.
-# Usage: ./install.sh [--dry-run] [--target /path/to/project] [cc|cursor|both]
+# Detects environment (Claude Code / Cursor / Codex) and runs the appropriate installer.
+# Usage: ./install.sh [--dry-run] [--target /path/to/project] [cc|cursor|codex|both|all]
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 VERSION="$(cat "$SCRIPT_DIR/.ai-plc-version" 2>/dev/null || echo "unknown")"
 DRY_RUN=""
 TARGET_ARGS=""
+CODEX_CONFIG_ARGS=""
 ENV_MODE=""
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --dry-run) DRY_RUN="--dry-run"; shift ;;
         --target) TARGET_ARGS="--target $2"; shift 2 ;;
-        cc|cursor|both) ENV_MODE="$1"; shift ;;
+        --install-config) CODEX_CONFIG_ARGS="--install-config"; shift ;;
+        cc|cursor|codex|both|all) ENV_MODE="$1"; shift ;;
         -h|--help)
             echo "AI-PLC Universal Installer v${VERSION}"
             echo ""
-            echo "Usage: $0 [OPTIONS] [cc|cursor|both]"
+            echo "Usage: $0 [OPTIONS] [cc|cursor|codex|both|all]"
             echo ""
             echo "Environments:"
             echo "  cc       Install for Claude Code only"
             echo "  cursor   Install for Cursor only"
-            echo "  both     Install for both environments"
+            echo "  codex    Install for Codex app only"
+            echo "  both     Install for Claude Code and Cursor"
+            echo "  all      Install for Claude Code, Cursor, and Codex"
             echo "  (none)   Auto-detect and prompt"
             echo ""
             echo "Options:"
             echo "  --dry-run          Show what would be done without making changes"
             echo "  --target PATH      Install to specified project directory"
+            echo "  --install-config   Also create .codex/config.toml if missing (codex/all only)"
             echo "  -h, --help         Show this help message"
             exit 0
             ;;
@@ -49,26 +54,33 @@ if [[ -z "$ENV_MODE" ]]; then
 
     HAS_CC=false
     HAS_CURSOR=false
+    HAS_CODEX=false
     [[ -d "$TARGET_DIR/.claude" ]] && HAS_CC=true
     [[ -d "$TARGET_DIR/.cursor" ]] && HAS_CURSOR=true
+    [[ -d "$TARGET_DIR/.codex" || -d "$TARGET_DIR/.agents" ]] && HAS_CODEX=true
 
     echo "Detected environment:"
     $HAS_CC && echo "  ✅ Claude Code (.claude/ found)"
     $HAS_CURSOR && echo "  ✅ Cursor (.cursor/ found)"
-    ! $HAS_CC && ! $HAS_CURSOR && echo "  📁 No existing config detected (will create new)"
+    $HAS_CODEX && echo "  ✅ Codex app (.codex/ or .agents/ found)"
+    ! $HAS_CC && ! $HAS_CURSOR && ! $HAS_CODEX && echo "  📁 No existing config detected (will create new)"
     echo ""
 
     echo "Select installation target:"
     echo "  1) Claude Code only"
     echo "  2) Cursor only"
-    echo "  3) Both"
+    echo "  3) Codex app only"
+    echo "  4) Claude Code + Cursor"
+    echo "  5) All"
     echo ""
-    read -r -p "Enter choice [1-3]: " choice
+    read -r -p "Enter choice [1-5]: " choice
 
     case "$choice" in
         1) ENV_MODE="cc" ;;
         2) ENV_MODE="cursor" ;;
-        3) ENV_MODE="both" ;;
+        3) ENV_MODE="codex" ;;
+        4) ENV_MODE="both" ;;
+        5) ENV_MODE="all" ;;
         *) echo "Invalid choice."; exit 1 ;;
     esac
 fi
@@ -80,11 +92,24 @@ case "$ENV_MODE" in
     cursor)
         bash "$SCRIPT_DIR/install-cursor.sh" $DRY_RUN $TARGET_ARGS
         ;;
+    codex)
+        bash "$SCRIPT_DIR/install-codex.sh" $DRY_RUN $TARGET_ARGS $CODEX_CONFIG_ARGS
+        ;;
     both)
         echo "=== Installing for Claude Code ==="
         bash "$SCRIPT_DIR/install-cc.sh" $DRY_RUN $TARGET_ARGS
         echo ""
         echo "=== Installing for Cursor ==="
         bash "$SCRIPT_DIR/install-cursor.sh" $DRY_RUN $TARGET_ARGS
+        ;;
+    all)
+        echo "=== Installing for Claude Code ==="
+        bash "$SCRIPT_DIR/install-cc.sh" $DRY_RUN $TARGET_ARGS
+        echo ""
+        echo "=== Installing for Cursor ==="
+        bash "$SCRIPT_DIR/install-cursor.sh" $DRY_RUN $TARGET_ARGS
+        echo ""
+        echo "=== Installing for Codex app ==="
+        bash "$SCRIPT_DIR/install-codex.sh" $DRY_RUN $TARGET_ARGS $CODEX_CONFIG_ARGS
         ;;
 esac

@@ -1,3 +1,8 @@
+---
+name: ai-plc-construction
+description: Use this after inception to generate executable task agents or execution plans from backlog.yaml.
+---
+
 > 🏷️ **Project:** [AI-PLC Project](https://www.notion.so/268b133701be808a81bce066ce075281)
 > **Type:** command
 > **Context:** AI-PLC Stage 3 — Construction。Backlogの各タスクに対して実行可能なスキル定義（Harness）を生成するステージ。既存テンプレートからのProgressive Context Loadingとタスク固有コンテキストに基づく動的生成を組み合わせる。
@@ -112,7 +117,7 @@ Progressive Context Loading"]
 | Agent Instructions | Stage 4実行時のAI指示（= CCでのシステムプロンプト） | 自動実行制御 |
 > 🤖 **Agent定義 = 実行手順 + 制約 + ツール権限が1つにまとまったもの。**
 >
-> CCの`.claude/agents/*.md`では1ファイルにシステムプロンプトとして全部入る。
+> Claude Code installでは`.claude/agents/*.md`、Cursor installでは`.cursor/skills/ai-plc/`、Codex installでは`.agents/skills/ai-plc/`を基準に配置・参照する。
 >
 > NotionではAgent定義ページとしてGoal/Input/Output/Flow/Guardrails/AI実行指示を記載。
 >

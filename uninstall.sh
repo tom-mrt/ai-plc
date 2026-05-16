@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # AI-PLC Uninstaller
-# Removes AI-PLC files from Claude Code and/or Cursor project.
+# Removes AI-PLC files from Claude Code, Cursor, and/or Codex app project.
 # Usage: ./uninstall.sh [--dry-run] [--target /path/to/project]
 
 DRY_RUN=false
@@ -49,8 +49,8 @@ safe_remove() {
 
 remove_markers() {
     local file="$1"
-    local marker_start="<!-- AI-PLC START -->"
-    local marker_end="<!-- AI-PLC END -->"
+    local marker_start="${2:-<!-- AI-PLC START -->}"
+    local marker_end="${3:-<!-- AI-PLC END -->}"
 
     if [[ ! -f "$file" ]]; then
         return
@@ -100,6 +100,12 @@ for rule in "$TARGET_DIR"/.cursor/rules/ai-plc-*.mdc; do
 done
 
 echo ""
+echo "Codex app files:"
+safe_remove "$TARGET_DIR/.agents/skills/ai-plc"
+safe_remove "$TARGET_DIR/.codex/config.ai-plc.example.toml"
+remove_markers "$TARGET_DIR/AGENTS.md" "<!-- AI-PLC CODEX START -->" "<!-- AI-PLC CODEX END -->"
+
+echo ""
 echo "Shared files:"
 safe_remove "$TARGET_DIR/.ai-plc-version"
 
@@ -107,5 +113,6 @@ echo ""
 echo "⚠️  The following files were NOT removed (may contain your customizations):"
 echo "   .claude/soul.md, .claude/user.md, .claude/memory.md, .claude/wiki/"
 echo "   .claude/commands/, .claude/agents/"
+echo "   .codex/config.toml"
 echo ""
 echo "✨ AI-PLC uninstalled."

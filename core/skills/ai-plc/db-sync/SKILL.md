@@ -1,6 +1,11 @@
 # AI-PLC DB Sync
 
-`.claude/db/ai_plc.db` をローカルの正本として扱い、`projects` / `tasks` テーブルを Notion と双方向同期する。
+AI-PLC DBをローカルの正本として扱い、`projects` / `tasks` テーブルを Notion と双方向同期する。
+
+既定配置:
+- Claude Code install: `.claude/db/ai_plc.db`
+- Cursor install: `.cursor/db/ai_plc.db`（導入している場合）
+- Codex install: `.agents/db/ai_plc.db`（導入している場合）
 
 ## When to Use
 
@@ -14,8 +19,8 @@
 ## Commands
 
 ```bash
-python3 .claude/db/sync.py pull              # Notion → ローカル
-python3 .claude/db/sync.py push              # ローカル → Notion
+python3 .claude/db/sync.py pull              # Notion → ローカル（Claude Code例）
+python3 .claude/db/sync.py push              # ローカル → Notion（Claude Code例）
 python3 .claude/db/sync.py sync              # 双方向 (pull → push)
 python3 .claude/db/sync.py status            # 差分プレビュー
 python3 .claude/db/sync.py pull --dry-run    # dry-run (変更なし)
@@ -25,11 +30,11 @@ python3 .claude/db/sync.py push --dry-run    # dry-run (変更なし)
 ## Prerequisites
 
 - `NOTION_API_TOKEN` 環境変数が設定済みであること
-- `.claude/db/ai_plc.db` が存在すること（なければ `python3 .claude/db/init_db.py --import` で作成）
+- 利用環境のAI-PLC DBが存在すること（Claude Code例: なければ `python3 .claude/db/init_db.py --import` で作成）
 
 ## Sync Logic
 
-- **Pull**: Notion 側を query → `notion_last_edited` で差分検出 → `.claude/db/ai_plc.db` を更新
+- **Pull**: Notion 側を query → `notion_last_edited` で差分検出 → AI-PLC DBを更新
 - **Push**: `updated_at > last_sync_at` の行を検出 → Notion API で PATCH/POST
 - **Conflict**: Pull時にローカルも変更されている行は CONFLICT としてスキップ（安全側）
 
@@ -37,8 +42,8 @@ python3 .claude/db/sync.py push --dry-run    # dry-run (変更なし)
 
 | テーブル | ローカルDB | 同期先Notion DB | 用途 |
 | --- | --- | --- | --- |
-| projects | `.claude/db/ai_plc.db` | AI-PLC Projects (`8f5680ac-...`) | プロジェクト管理 |
-| tasks | `.claude/db/ai_plc.db` | AI-PLC Tasks (`a4df4cf0-...`) | タスク管理 |
+| projects | AI-PLC DB | AI-PLC Projects (`8f5680ac-...`) | プロジェクト管理 |
+| tasks | AI-PLC DB | AI-PLC Tasks (`a4df4cf0-...`) | タスク管理 |
 
 ## Typical Workflow
 
@@ -49,8 +54,8 @@ python3 .claude/db/sync.py push --dry-run    # dry-run (変更なし)
 
 ## Related Files
 
-- `.claude/db/ai_plc.db` — SQLite DB本体
-- `.claude/db/init_db.py` — スキーマ作成 + マイグレーション
-- `.claude/db/plc_query.py` — ローカルクエリヘルパー
-- `.claude/db/sync.py` — 同期エンジン
-- `.claude/db/README.md` — ドキュメント
+- `db/ai_plc.db` — SQLite DB本体
+- `db/init_db.py` — スキーマ作成 + マイグレーション
+- `db/plc_query.py` — ローカルクエリヘルパー
+- `db/sync.py` — 同期エンジン
+- `db/README.md` — ドキュメント
