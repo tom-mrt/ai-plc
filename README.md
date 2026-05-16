@@ -97,6 +97,7 @@ Goal: ...
 | 配置先 | 内容 |
 |--------|------|
 | `.agents/skills/ai-plc/` | 4ステージスキル + テンプレート群 |
+| `.agents/rules/ai-plc-*.md` | システム・セッション・Adaptiveルール |
 | `AGENTS.md` | Codex用AI-PLCセクションをマージ（既存保持） |
 | `.codex/config.ai-plc.example.toml` | gpt-5.5 high向けCodex設定例 |
 | `.ai-plc-version` | インストール済みバージョン |

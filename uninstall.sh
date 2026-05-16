@@ -102,6 +102,9 @@ done
 echo ""
 echo "Codex app files:"
 safe_remove "$TARGET_DIR/.agents/skills/ai-plc"
+for rule in "$TARGET_DIR"/.agents/rules/ai-plc-*.md; do
+    safe_remove "$rule"
+done
 safe_remove "$TARGET_DIR/.codex/config.ai-plc.example.toml"
 remove_markers "$TARGET_DIR/AGENTS.md" "<!-- AI-PLC CODEX START -->" "<!-- AI-PLC CODEX END -->"
 

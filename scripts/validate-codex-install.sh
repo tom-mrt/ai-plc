@@ -5,11 +5,17 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 echo "== bash syntax =="
-bash -n "$REPO_ROOT/install.sh" \
-    "$REPO_ROOT/install-cc.sh" \
-    "$REPO_ROOT/install-cursor.sh" \
-    "$REPO_ROOT/install-codex.sh" \
+scripts_to_check=(
+    "$REPO_ROOT/install.sh"
+    "$REPO_ROOT/install-cc.sh"
+    "$REPO_ROOT/install-cursor.sh"
+    "$REPO_ROOT/install-codex.sh"
     "$REPO_ROOT/uninstall.sh"
+)
+
+for script in "${scripts_to_check[@]}"; do
+    bash -n "$script"
+done
 
 TMP_ROOT="$(mktemp -d)"
 cleanup() {
@@ -23,6 +29,8 @@ git -C "$TARGET" init >/dev/null
 printf 'user config\n' > "$TARGET/.codex-config-before"
 mkdir -p "$TARGET/.codex"
 printf 'custom = true\n' > "$TARGET/.codex/config.toml"
+mkdir -p "$TARGET/.agents/skills/ai-plc"
+printf 'existing skill readme\n' > "$TARGET/.agents/skills/ai-plc/README.md"
 
 echo "== install codex =="
 bash "$REPO_ROOT/install-codex.sh" --target "$TARGET"
@@ -33,6 +41,9 @@ required_paths=(
     ".agents/skills/ai-plc/02-inception/SKILL.md"
     ".agents/skills/ai-plc/03-construction/SKILL.md"
     ".agents/skills/ai-plc/04-operation/SKILL.md"
+    ".agents/rules/ai-plc-system.md"
+    ".agents/rules/ai-plc-session.md"
+    ".agents/rules/ai-plc-adaptive.md"
     ".codex/config.ai-plc.example.toml"
     ".ai-plc-version"
 )
@@ -43,6 +54,11 @@ for path in "${required_paths[@]}"; do
         exit 1
     fi
 done
+
+if ! compgen -G "$TARGET/.agents/skills/ai-plc/README.md.bak.*" >/dev/null; then
+    echo "existing skill file was not backed up" >&2
+    exit 1
+fi
 
 for skill in \
     "$TARGET/.agents/skills/ai-plc/01-collection/SKILL.md" \
@@ -63,6 +79,11 @@ bash "$REPO_ROOT/uninstall.sh" --target "$TARGET"
 
 if [[ -e "$TARGET/.agents/skills/ai-plc" ]]; then
     echo "Codex skills were not removed" >&2
+    exit 1
+fi
+
+if compgen -G "$TARGET/.agents/rules/ai-plc-*.md" >/dev/null; then
+    echo "Codex rules were not removed" >&2
     exit 1
 fi
 

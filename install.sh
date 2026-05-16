@@ -7,16 +7,16 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 VERSION="$(cat "$SCRIPT_DIR/.ai-plc-version" 2>/dev/null || echo "unknown")"
-DRY_RUN=""
-TARGET_ARGS=""
-CODEX_CONFIG_ARGS=""
+DRY_RUN_ARGS=()
+TARGET_ARGS=()
+CODEX_CONFIG_ARGS=()
 ENV_MODE=""
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --dry-run) DRY_RUN="--dry-run"; shift ;;
-        --target) TARGET_ARGS="--target $2"; shift 2 ;;
-        --install-config) CODEX_CONFIG_ARGS="--install-config"; shift ;;
+        --dry-run) DRY_RUN_ARGS=(--dry-run); shift ;;
+        --target) TARGET_ARGS=(--target "$2"); shift 2 ;;
+        --install-config) CODEX_CONFIG_ARGS=(--install-config); shift ;;
         cc|cursor|codex|both|all) ENV_MODE="$1"; shift ;;
         -h|--help)
             echo "AI-PLC Universal Installer v${VERSION}"
@@ -47,7 +47,10 @@ echo "🚀 AI-PLC Universal Installer v${VERSION}"
 echo ""
 
 if [[ -z "$ENV_MODE" ]]; then
-    TARGET_DIR="${TARGET_ARGS#--target }"
+    TARGET_DIR=""
+    if [[ ${#TARGET_ARGS[@]} -gt 0 ]]; then
+        TARGET_DIR="${TARGET_ARGS[1]}"
+    fi
     if [[ -z "$TARGET_DIR" ]]; then
         TARGET_DIR="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
     fi
@@ -87,29 +90,29 @@ fi
 
 case "$ENV_MODE" in
     cc)
-        bash "$SCRIPT_DIR/install-cc.sh" $DRY_RUN $TARGET_ARGS
+        bash "$SCRIPT_DIR/install-cc.sh" "${DRY_RUN_ARGS[@]}" "${TARGET_ARGS[@]}"
         ;;
     cursor)
-        bash "$SCRIPT_DIR/install-cursor.sh" $DRY_RUN $TARGET_ARGS
+        bash "$SCRIPT_DIR/install-cursor.sh" "${DRY_RUN_ARGS[@]}" "${TARGET_ARGS[@]}"
         ;;
     codex)
-        bash "$SCRIPT_DIR/install-codex.sh" $DRY_RUN $TARGET_ARGS $CODEX_CONFIG_ARGS
+        bash "$SCRIPT_DIR/install-codex.sh" "${DRY_RUN_ARGS[@]}" "${TARGET_ARGS[@]}" "${CODEX_CONFIG_ARGS[@]}"
         ;;
     both)
         echo "=== Installing for Claude Code ==="
-        bash "$SCRIPT_DIR/install-cc.sh" $DRY_RUN $TARGET_ARGS
+        bash "$SCRIPT_DIR/install-cc.sh" "${DRY_RUN_ARGS[@]}" "${TARGET_ARGS[@]}"
         echo ""
         echo "=== Installing for Cursor ==="
-        bash "$SCRIPT_DIR/install-cursor.sh" $DRY_RUN $TARGET_ARGS
+        bash "$SCRIPT_DIR/install-cursor.sh" "${DRY_RUN_ARGS[@]}" "${TARGET_ARGS[@]}"
         ;;
     all)
         echo "=== Installing for Claude Code ==="
-        bash "$SCRIPT_DIR/install-cc.sh" $DRY_RUN $TARGET_ARGS
+        bash "$SCRIPT_DIR/install-cc.sh" "${DRY_RUN_ARGS[@]}" "${TARGET_ARGS[@]}"
         echo ""
         echo "=== Installing for Cursor ==="
-        bash "$SCRIPT_DIR/install-cursor.sh" $DRY_RUN $TARGET_ARGS
+        bash "$SCRIPT_DIR/install-cursor.sh" "${DRY_RUN_ARGS[@]}" "${TARGET_ARGS[@]}"
         echo ""
         echo "=== Installing for Codex app ==="
-        bash "$SCRIPT_DIR/install-codex.sh" $DRY_RUN $TARGET_ARGS $CODEX_CONFIG_ARGS
+        bash "$SCRIPT_DIR/install-codex.sh" "${DRY_RUN_ARGS[@]}" "${TARGET_ARGS[@]}" "${CODEX_CONFIG_ARGS[@]}"
         ;;
 esac

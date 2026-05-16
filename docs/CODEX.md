@@ -31,6 +31,7 @@ cd ai-plc
 | Path | 役割 |
 |------|------|
 | `.agents/skills/ai-plc/` | Codexが参照するAI-PLC skill package |
+| `.agents/rules/ai-plc-*.md` | skill packageが参照するAI-PLC rules |
 | `AGENTS.md` | Codex用の短い運用ガイド。AI-PLC Codex markerでマージ |
 | `.codex/config.ai-plc.example.toml` | 推奨Codex設定のexample |
 | `.ai-plc-version` | インストール済みAI-PLCバージョン |

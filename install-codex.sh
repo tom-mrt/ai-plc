@@ -61,11 +61,22 @@ safe_copy() {
 safe_copy_dir() {
     local src="$1" dst="$2"
     if [[ "$DRY_RUN" == true ]]; then
-        dry "copy directory $src → $dst"
+        dry "copy directory $src → $dst (file-level backups for existing files)"
         return
     fi
     mkdir -p "$dst"
-    cp -r "$src"/* "$dst"/ 2>/dev/null || true
+
+    while IFS= read -r -d '' path; do
+        local rel target
+        rel="${path#$src/}"
+        target="$dst/$rel"
+        if [[ -d "$path" ]]; then
+            mkdir -p "$target"
+        elif [[ -f "$path" ]]; then
+            safe_copy "$path" "$target"
+        fi
+    done < <(find "$src" -mindepth 1 -print0)
+
     info "Installed directory: $dst"
 }
 
@@ -132,16 +143,24 @@ if [[ "$DRY_RUN" == true ]]; then
 fi
 echo ""
 
-echo "📦 Step 1/5: Installing skills..."
+echo "📦 Step 1/6: Installing skills..."
 safe_copy_dir "$SCRIPT_DIR/core/skills/ai-plc" "$TARGET_DIR/.agents/skills/ai-plc"
 info "Skills installed: .agents/skills/ai-plc/"
 
 echo ""
-echo "📝 Step 2/5: Merging AGENTS.md..."
+echo "📏 Step 2/6: Installing rules..."
+for rule in "$SCRIPT_DIR"/core/rules/ai-plc-*.md; do
+    fname="$(basename "$rule")"
+    safe_copy "$rule" "$TARGET_DIR/.agents/rules/$fname"
+done
+info "Rules installed: .agents/rules/ai-plc-*.md"
+
+echo ""
+echo "📝 Step 3/6: Merging AGENTS.md..."
 merge_with_markers "$SCRIPT_DIR/codex/AGENTS.md.template" "$TARGET_DIR/AGENTS.md"
 
 echo ""
-echo "🔧 Step 3/5: Installing Codex config example..."
+echo "🔧 Step 4/6: Installing Codex config example..."
 safe_copy "$SCRIPT_DIR/codex/config.toml.template" "$TARGET_DIR/.codex/config.ai-plc.example.toml"
 if [[ "$INSTALL_CONFIG" == true ]]; then
     safe_copy_if_missing "$SCRIPT_DIR/codex/config.toml.template" "$TARGET_DIR/.codex/config.toml"
@@ -150,14 +169,14 @@ else
 fi
 
 echo ""
-echo "📌 Step 4/5: Version marker..."
+echo "📌 Step 5/6: Version marker..."
 if [[ "$DRY_RUN" != true ]]; then
     cp "$SCRIPT_DIR/.ai-plc-version" "$TARGET_DIR/.ai-plc-version"
 fi
 info "Version: $VERSION"
 
 echo ""
-echo "✅ Step 5/5: Safety note..."
+echo "✅ Step 6/6: Safety note..."
 info ".codex/config.toml is never overwritten"
 
 echo ""
