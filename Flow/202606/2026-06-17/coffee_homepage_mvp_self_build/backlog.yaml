@@ -116,7 +116,7 @@ tasks:
     description: "`coffee-log` Content Collectionを作り、MDX記事を型付きで管理できるようにする。まずは1から3件のサンプル記事で一覧表示に必要なデータを揃える。"
     type: "task"
     priority: "P0"
-    status: "pending"
+    status: "completed"
     owner: "tomoyamorita"
     estimated_hours: 2.0
     dependencies:
@@ -129,13 +129,14 @@ tasks:
       - "`src/content.config.ts` に `coffee-log` collectionが定義されている"
       - "サンプルMDX記事が1件以上ある"
       - "`draft: true` を公開一覧から除外できる設計になっている"
+    completed_at: "2026-06-19"
 
   - id: "T006"
     name: "トップページMVP実装"
     description: "名刺QRから見せる入口として、サイト紹介、最近のおすすめコーヒー、好きなお店3選、最新Coffee Logへの導線を持つトップページを作る。"
     type: "task"
     priority: "P0"
-    status: "pending"
+    status: "completed"
     owner: "tomoyamorita"
     estimated_hours: 2.0
     dependencies:
@@ -149,6 +150,7 @@ tasks:
       - "トップページにMVPの主要セクションが表示される"
       - "Coffee Log一覧への導線がある"
       - "文章量が少なくても未完成に見えにくい構成になっている"
+    completed_at: "2026-06-19"
 
   - id: "T007"
     name: "Coffee Log一覧・詳細ページ実装"
@@ -224,8 +226,8 @@ stage2_seed_themes:
 
 progress:
   total: 9
-  completed: 4
-  percent: 44
+  completed: 6
+  percent: 67
 
 summary:
   task_count: 9
@@ -284,3 +286,11 @@ refactoring_log:
     event: "task_completed"
     task_id: "T004"
     note: "Created reusable Layout/Header/Footer components in /Users/tomoyamorita/Projects/ai-plc/workspaces/meishi-coffee. Navigation is intentionally limited to Top and Coffee Log, index.astro now uses Layout, and docker build succeeds."
+  - date: "2026-06-19"
+    event: "task_completed"
+    task_id: "T005"
+    note: "Reviewed Coffee Log Content Collection setup in /Users/tomoyamorita/Projects/ai-plc/workspaces/meishi-coffee. @astrojs/mdx is configured, src/content.config.ts defines the coffee-log collection, public and draft MDX samples exist, draft exclusion is documented for T006/T007, and docker build succeeds."
+  - date: "2026-06-19"
+    event: "task_completed"
+    task_id: "T006"
+    note: "Reviewed homepage MVP implementation in /Users/tomoyamorita/Projects/ai-plc/workspaces/meishi-coffee. index.astro now shows the site intro, recent recommendation, favorite shops, latest Coffee Log entries, and /coffee/ links while excluding draft entries, and docker build succeeds."

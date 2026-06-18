@@ -5,8 +5,8 @@
 - Scope ID: `L-0617`
 - Scope: コーヒーホームページMVP自作
 - 作成日: 2026-06-17
-- 現在位置: Stage 4 Operation / T003完了
-- 次の実行候補: `T004 Layout/Header/Footer作成`
+- 現在位置: Stage 4 Operation / T006完了
+- 次の実行候補: `T007 Coffee Log一覧・詳細ページ実装`
 
 ## 目的
 
@@ -45,7 +45,7 @@ MVPは以下に絞る。
 | Stage 1 Collection | 完了 | `intent.yaml`, `context.yaml`, `Context/` |
 | Stage 2 Inception | 完了 | `backlog.yaml`, `Context/06_inception_decisions.md` |
 | Stage 3 Construction | 完了 | `Agents/` |
-| Stage 4 Operation | 進行中 | `T001`, `T002`, `T003` 完了 |
+| Stage 4 Operation | 進行中 | `T001`, `T002`, `T003`, `T004`, `T005`, `T006` 完了 |
 
 ## Backlog
 
@@ -54,16 +54,16 @@ MVPは以下に絞る。
 | T001 | 開発環境と作業場所の確認 | completed |
 | T002 | Astro最小プロジェクト作成 | completed |
 | T003 | Tailwind CSS + daisyUI導入 | completed |
-| T004 | Layout/Header/Footer作成 | pending |
-| T005 | Coffee Log Content Collection設計 | pending |
-| T006 | トップページMVP実装 | pending |
+| T004 | Layout/Header/Footer作成 | completed |
+| T005 | Coffee Log Content Collection設計 | completed |
+| T006 | トップページMVP実装 | completed |
 | T007 | Coffee Log一覧・詳細ページ実装 | pending |
 | T008 | レスポンシブ確認・ビルド検証 | pending |
 | T009 | GitHub/Cloudflare公開準備 | pending |
 
 ## 次に実行するプロンプト
 
-`@SKL_plc_04_operation を実行してください Layer: @/Users/tomoyamorita/Projects/ai-plc/Flow/202606/2026-06-17/coffee_homepage_mvp_self_build Task: T004`
+`@SKL_plc_04_operation を実行してください Layer: @/Users/tomoyamorita/Projects/ai-plc/Flow/202606/2026-06-17/coffee_homepage_mvp_self_build Task: T007`
 
 ## 作業中メモ
 
@@ -103,15 +103,23 @@ MVPは以下に絞る。
 - `src/pages/index.astro` は共通Layoutを使い、本文だけを持つ構成に整理した。
 - HeaderのナビはMVP範囲に合わせて `Top` と `Coffee Log` の2つに限定した。
 - T004をAI-PLC上も完了扱いに更新した。次はT005でCoffee Log Content Collectionを設計する。
+- T005で `@astrojs/mdx` を導入し、`src/content.config.ts` に `coffee-log` collectionを定義した。
+- `src/content/coffee-log/home-drip-first.mdx` を公開サンプル、`draft-test.mdx` をdraft除外確認用として作成済み。
+- T006/T007では `draft: true` の記事を `data.draft !== true` で除外する。
+- `docker compose run --rm web npm run build` が成功し、Content Collectionsのsyncも通った。
+- T005をAI-PLC上も完了扱いに更新した。次はT006でトップページMVPを実装する。
+- スキーマ定義は重くしないほうがいいかも。まずは仮決めしておいて、必要になったら精緻化する程度。
+- T006で `src/pages/index.astro` にサイト紹介、最近のおすすめ、好きなお店3選、最新Coffee Log、Coffee Log一覧への導線を実装した。
+- T006では `draft: true` のCoffee Logを表示から除外し、公開サンプルだけがトップページに出る構成にした。
+- `docker compose run --rm web npm run build` が成功し、トップページMVPはT004 LayoutとT005 Content Collectionを組み合わせても静的ビルドできることを確認した。
+- T006をAI-PLC上も完了扱いに更新した。次はT007でCoffee Log一覧・詳細ページを実装する。
 
 ## 疑問・確認したいこと
 
 - サイト名をどうするか。
 - 作成先ディレクトリを `/Users/tomoyamorita/Projects/ai-plc/workspaces/meishi-coffee` のままでよいか。
 - GitHub repository名を `meishi-coffee` のままでよいか。
-- トップページの最初の文章をどうするか。
-- Coffee Logの最初のサンプル記事を何にするか。
-- T005ではCoffee LogのContent Collectionと最初のサンプル記事をどう置くか確認する。
+- 好きなお店3選をいつ具体的な店名に差し替えるか。
 
 ## 外部操作ゲート
 

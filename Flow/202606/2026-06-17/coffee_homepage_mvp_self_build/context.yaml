@@ -44,6 +44,12 @@ context_documents:
   - name: "T004 Layout Navigation"
     url: "@Documents/T004_layout_navigation.md"
     summary: "Stage 4 T004の成果物。Astroアプリ `/Users/tomoyamorita/Projects/ai-plc/workspaces/meishi-coffee` に `Layout.astro`, `Header.astro`, `Footer.astro` を作成し、トップページへ適用した。ナビゲーションはMVP範囲に合わせてTopとCoffee Logだけに絞り、後続T006/T007で再利用できる共通ページ骨格を整えた。"
+  - name: "T005 Content Collection"
+    url: "@Documents/T005_content_collection.md"
+    summary: "Stage 4 T005の成果物。Astroアプリ `/Users/tomoyamorita/Projects/ai-plc/workspaces/meishi-coffee` に `@astrojs/mdx` を導入し、`src/content.config.ts` で `coffee-log` collectionを定義した。公開サンプルとdraft確認用のMDX記事を作成し、T006/T007では `draft: true` を公開一覧から除外する方針を明文化した。"
+  - name: "T006 Homepage MVP"
+    url: "@Documents/T006_homepage_mvp.md"
+    summary: "Stage 4 T006の成果物。Astroアプリ `/Users/tomoyamorita/Projects/ai-plc/workspaces/meishi-coffee` のトップページに、サイト紹介、最近のおすすめ、好きなお店3選、最新Coffee Log、Coffee Log一覧への導線を実装した。T005の方針どおり `draft: true` は表示から除外し、`docker compose run --rm web npm run build` 成功を確認した。"
 
 inheritance_rules:
   global_immutable:

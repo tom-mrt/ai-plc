@@ -1,18 +1,136 @@
 ---
+import { getCollection } from "astro:content";
 import Layout from "../components/Layout.astro";
+
+const coffeeLogs = (
+  await getCollection("coffee-log", ({ data }) => data.draft !== true)
+).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const latestLogs = coffeeLogs.slice(0, 3);
+const recommendedCoffee =
+  coffeeLogs.find((entry) => entry.data.recommended) ?? latestLogs[0];
+
+const formatDate = new Intl.DateTimeFormat("ja-JP", {
+  dateStyle: "medium",
+});
+
+const favoriteShops = [
+  {
+    name: "朝に寄りたいお店",
+    area: "近所",
+    note: "落ち着いて一杯飲める場所として紹介する仮枠。",
+  },
+  {
+    name: "豆を探したいお店",
+    area: "街歩き",
+    note: "好みの豆を見つけたら差し替えるための仮枠。",
+  },
+  {
+    name: "また行きたいお店",
+    area: "週末",
+    note: "記録が増えたら具体的な店名に更新する。",
+  },
+];
 ---
 
 <Layout title="Meishi Coffee">
-  <section class="mx-auto max-w-3xl">
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
+  <div class="mx-auto flex max-w-5xl flex-col gap-10">
+    <section class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+      <div class="space-y-5">
         <div class="badge badge-primary">Coffee homepage MVP</div>
-        <h1 class="card-title text-3xl">Meishi Coffee</h1>
-        <p>好きなコーヒー、お店、記録をまとめる小さなホームページです。</p>
-        <div class="card-actions justify-end">
+
+        <div class="space-y-3">
+          <h1 class="text-4xl font-bold leading-tight">Meishi Coffee</h1>
+          <p class="max-w-2xl text-base leading-7 text-base-content/75">
+            好きなコーヒー、お店、日々の抽出メモをまとめる小さなホームページです。
+            名刺QRから来た人が、最近飲んだコーヒーや好みをすぐ見られる入口にします。
+          </p>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
           <a class="btn btn-primary" href="/coffee/">Coffee Logを見る</a>
+          <a class="btn btn-outline" href="#favorite-shops">好きなお店を見る</a>
         </div>
       </div>
-    </div>
-  </section>
+
+      <aside class="rounded-box border border-base-300 bg-base-100 p-5 shadow-sm">
+        <p class="text-sm font-semibold text-base-content/60">最近のおすすめ</p>
+
+        {recommendedCoffee ? (
+          <div class="mt-3 space-y-2">
+            <h2 class="text-xl font-bold">{recommendedCoffee.data.title}</h2>
+            <p class="text-sm text-base-content/70">
+              {recommendedCoffee.data.place ?? "場所未設定"}
+              {recommendedCoffee.data.brew_method ? ` / ${recommendedCoffee.data.brew_method}` : ""}
+            </p>
+            <p class="leading-7">{recommendedCoffee.data.excerpt}</p>
+          </div>
+        ) : (
+          <p class="mt-3 text-base-content/70">
+            Coffee Logを追加すると、ここにおすすめが表示されます。
+          </p>
+        )}
+      </aside>
+    </section>
+
+    <section id="favorite-shops" class="space-y-4">
+      <div>
+        <h2 class="text-2xl font-bold">好きなお店3選</h2>
+        <p class="mt-2 text-base-content/70">
+          まずは仮の枠として置き、実際に紹介したいお店が決まったら差し替えます。
+        </p>
+      </div>
+
+      <div class="grid gap-4 md:grid-cols-3">
+        {favoriteShops.map((shop) => (
+          <article class="rounded-box border border-base-300 bg-base-100 p-5 shadow-sm">
+            <div class="badge badge-outline">{shop.area}</div>
+            <h3 class="mt-3 text-lg font-bold">{shop.name}</h3>
+            <p class="mt-2 text-sm leading-6 text-base-content/70">{shop.note}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="space-y-4">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 class="text-2xl font-bold">最新Coffee Log</h2>
+          <p class="mt-2 text-base-content/70">
+            最近飲んだコーヒーの記録を新しい順に表示します。
+          </p>
+        </div>
+
+        <a class="btn btn-sm btn-outline" href="/coffee/">一覧を見る</a>
+      </div>
+
+      {latestLogs.length > 0 ? (
+        <div class="grid gap-4 md:grid-cols-3">
+          {latestLogs.map((log) => (
+            <article class="rounded-box border border-base-300 bg-base-100 p-5 shadow-sm">
+              <p class="text-sm text-base-content/60">
+                {formatDate.format(log.data.date)}
+              </p>
+              <h3 class="mt-2 text-lg font-bold">{log.data.title}</h3>
+              <p class="mt-2 text-sm leading-6 text-base-content/70">
+                {log.data.excerpt}
+              </p>
+
+              <div class="mt-4 flex flex-wrap gap-2">
+                {log.data.tags.map((tag) => (
+                  <span class="badge badge-ghost">{tag}</span>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="rounded-box border border-dashed border-base-300 bg-base-100 p-6">
+          <p class="text-base-content/70">
+            公開中のCoffee Logはまだありません。
+          </p>
+        </div>
+      )}
+    </section>
+  </div>
 </Layout>
