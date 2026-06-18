@@ -41,6 +41,9 @@ context_documents:
   - name: "T003 Tailwind daisyUI Setup"
     url: "@Documents/T003_tailwind_daisyui_setup.md"
     summary: "Stage 4 T003の成果物。Astroアプリ `/Users/tomoyamorita/Projects/ai-plc/workspaces/meishi-coffee` に Tailwind CSS v4、`@tailwindcss/vite`、daisyUIを導入し、`astro.config.mjs`、`src/styles/global.css`、`src/pages/index.astro` を更新した。`card`、`badge`、`btn btn-primary` の生成と `docker compose run --rm web npm run build` 成功を確認し、T004以降の共通UI基盤として使える状態にした。"
+  - name: "T004 Layout Navigation"
+    url: "@Documents/T004_layout_navigation.md"
+    summary: "Stage 4 T004の成果物。Astroアプリ `/Users/tomoyamorita/Projects/ai-plc/workspaces/meishi-coffee` に `Layout.astro`, `Header.astro`, `Footer.astro` を作成し、トップページへ適用した。ナビゲーションはMVP範囲に合わせてTopとCoffee Logだけに絞り、後続T006/T007で再利用できる共通ページ骨格を整えた。"
 
 inheritance_rules:
   global_immutable:

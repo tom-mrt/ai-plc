@@ -1,28 +1,18 @@
 ---
-import "../styles/global.css";
+import Layout from "../components/Layout.astro";
 ---
 
-<html lang="ja">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Meishi Coffee</title>
-  </head>
-  <body class="min-h-screen bg-base-200 p-6">
-    <main class="mx-auto max-w-3xl">
-      <div class="card bg-base-100 shadow-xl">
-        <div class="card-body">
-          <div class="badge badge-primary">T003 check</div>
-          <h1 class="card-title text-3xl">Meishi Coffee</h1>
-          <p>Tailwind CSS と daisyUI が読み込まれているか確認するページです。</p>
-          <div class="card-actions justify-end">
-            <button class="btn btn-primary">daisyUI button</button>
-          </div>
+<Layout title="Meishi Coffee">
+  <section class="mx-auto max-w-3xl">
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <div class="badge badge-primary">Coffee homepage MVP</div>
+        <h1 class="card-title text-3xl">Meishi Coffee</h1>
+        <p>好きなコーヒー、お店、記録をまとめる小さなホームページです。</p>
+        <div class="card-actions justify-end">
+          <a class="btn btn-primary" href="/coffee/">Coffee Logを見る</a>
         </div>
       </div>
-    </main>
-  </body>
-</html>
+    </div>
+  </section>
+</Layout>

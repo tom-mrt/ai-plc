@@ -96,7 +96,7 @@ tasks:
     description: "全ページ共通のLayout、Header、Footerを作る。ナビゲーションはトップとCoffee Logだけに絞り、初期MVPの構造を明確にする。"
     type: "task"
     priority: "P0"
-    status: "pending"
+    status: "completed"
     owner: "tomoyamorita"
     estimated_hours: 2.0
     dependencies:
@@ -109,6 +109,7 @@ tasks:
       - "`Layout.astro`, `Header.astro`, `Footer.astro` が作られている"
       - "トップページとCoffee Logへの導線がある"
       - "スマホ幅でもナビゲーションが破綻しない"
+    completed_at: "2026-06-19"
 
   - id: "T005"
     name: "Coffee Log Content Collection設計"
@@ -223,8 +224,8 @@ stage2_seed_themes:
 
 progress:
   total: 9
-  completed: 3
-  percent: 33
+  completed: 4
+  percent: 44
 
 summary:
   task_count: 9
@@ -279,3 +280,7 @@ refactoring_log:
     event: "task_completed"
     task_id: "T003"
     note: "Reviewed Tailwind CSS v4 and daisyUI setup in /Users/tomoyamorita/Projects/ai-plc/workspaces/meishi-coffee. @tailwindcss/vite is configured in astro.config.mjs, global.css imports Tailwind and daisyUI, index.astro uses card/badge/button primitives, docker build succeeds, and npm audit --audit-level=high exits cleanly with only low severity findings."
+  - date: "2026-06-19"
+    event: "task_completed"
+    task_id: "T004"
+    note: "Created reusable Layout/Header/Footer components in /Users/tomoyamorita/Projects/ai-plc/workspaces/meishi-coffee. Navigation is intentionally limited to Top and Coffee Log, index.astro now uses Layout, and docker build succeeds."

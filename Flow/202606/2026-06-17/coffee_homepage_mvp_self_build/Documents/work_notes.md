@@ -98,6 +98,11 @@ MVPは以下に絞る。
 - `docker compose up` でAstro dev serverが起動し、`/` が `200` 応答することを確認した。
 - `npm audit --audit-level=high` は終了コード0。残りはlow severity 2件のため、T008/T009の公開前確認で再チェックする。
 - T003をAI-PLC上も完了扱いに更新した。次はT004でLayout/Header/Footerを作る。
+- astroのprops, slotの概念。reactに似ている。propsを定義すれば、外部から値を受け取れる。コンポーネントに引数を渡す。
+- T004で `src/components/Layout.astro`, `Header.astro`, `Footer.astro` を作成した。
+- `src/pages/index.astro` は共通Layoutを使い、本文だけを持つ構成に整理した。
+- HeaderのナビはMVP範囲に合わせて `Top` と `Coffee Log` の2つに限定した。
+- T004をAI-PLC上も完了扱いに更新した。次はT005でCoffee Log Content Collectionを設計する。
 
 ## 疑問・確認したいこと
 
@@ -106,7 +111,7 @@ MVPは以下に絞る。
 - GitHub repository名を `meishi-coffee` のままでよいか。
 - トップページの最初の文章をどうするか。
 - Coffee Logの最初のサンプル記事を何にするか。
-- T004ではT003で導入したdaisyUIの `card`, `badge`, `btn` などを使って、共通Layout/Header/Footerを作る。
+- T005ではCoffee LogのContent Collectionと最初のサンプル記事をどう置くか確認する。
 
 ## 外部操作ゲート
 
