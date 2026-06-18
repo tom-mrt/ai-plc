@@ -1,0 +1,281 @@
+version: "1.0"
+scope_id: "L-0617"
+generated_at: "2026-06-17"
+status: "operation_in_progress"
+construction:
+  stage: "Construction"
+  generated_at: "2026-06-17"
+  agent_generation_mode: "bulk"
+  agent_tier_policy: "all_full"
+  approval:
+    status: "approved"
+    approved_by: "user"
+    approved_at: "2026-06-17"
+  generated_agents:
+    - "Agents/AGT_T001_environment_check.md"
+    - "Agents/AGT_T002_astro_minimal_project.md"
+    - "Agents/AGT_T003_tailwind_daisyui_setup.md"
+    - "Agents/AGT_T004_layout_navigation.md"
+    - "Agents/AGT_T005_content_collection.md"
+    - "Agents/AGT_T006_homepage_mvp.md"
+    - "Agents/AGT_T007_coffee_pages.md"
+    - "Agents/AGT_T008_build_responsive_check.md"
+    - "Agents/AGT_T009_publish_readiness.md"
+
+focus_strategy: "tech_lead"
+focus_strategy_reason: "初学者が自力でMVPを作るには、環境構築、最小実装、コンテンツ設計、ページ実装、検証、公開準備を依存順に分ける必要があるため。"
+focus_strategy_confirmed_by: "user"
+decomposition_pattern: "single_layer_sequential_tasks"
+
+sublayers: []
+
+tasks:
+  - id: "T001"
+    name: "開発環境と作業場所の確認"
+    description: "Node.js、npm、Git、エディタ、作成先ディレクトリ、プロジェクト名、GitHub repository名候補を確認する。実装前に、ユーザーが自力でコマンドを追える状態を作る。"
+    type: "task"
+    priority: "P0"
+    status: "completed"
+    owner: "tomoyamorita"
+    estimated_hours: 1.0
+    dependencies: []
+    command: "SKL_plc_03_construction"
+    command_template_ref: "TPL_coding_agent"
+    origin: "Context/02_beginner_learning_path.md#Recommended Order"
+    output: "Documents/T001_environment_check.md"
+    completed_at: "2026-06-17"
+    acceptance_criteria:
+      - "Node.js/npm/Gitの有無が確認されている"
+      - "作業ディレクトリとプロジェクト名が決まっている"
+      - "外部公開やGitHub操作は本人承認が必要な境界として再確認されている"
+
+  - id: "T002"
+    name: "Astro最小プロジェクト作成"
+    description: "Docker上でAstroプロジェクトを作成し、初期ページがローカルで表示されるところまで進める。ホストMacではnpm installを直接実行せず、node_modulesはDocker named volumeに置く。最初の目的はデザインではなく、Astroのページ編集が反映されることを体感すること。"
+    type: "task"
+    priority: "P0"
+    status: "completed"
+    owner: "tomoyamorita"
+    estimated_hours: 1.5
+    dependencies:
+      - "T001"
+    command: "SKL_plc_03_construction"
+    command_template_ref: "TPL_coding_agent"
+    origin: "Context/02_beginner_learning_path.md#Unit 1: Astroの基本"
+    output: "Documents/T002_astro_minimal_project.md"
+    completed_at: "2026-06-17"
+    acceptance_criteria:
+      - "Astroプロジェクトが作成されている"
+      - "`compose.yaml` が作成されている"
+      - "`docker compose up` でローカル表示できる"
+      - "ホスト側に `node_modules/` を作らない構成になっている"
+      - "`src/pages/index.astro` の小さな編集が画面に反映される"
+
+  - id: "T003"
+    name: "Tailwind CSS + daisyUI導入"
+    description: "公式手順に沿ってTailwind CSS v4とdaisyUIを導入する。MVPではカード、ボタン、バッジ、ナビゲーション程度に利用範囲を絞る。"
+    type: "task"
+    priority: "P0"
+    status: "completed"
+    owner: "tomoyamorita"
+    estimated_hours: 1.5
+    dependencies:
+      - "T002"
+    command: "SKL_plc_03_construction"
+    command_template_ref: "TPL_coding_agent"
+    origin: "Context/03_technical_stack_official_context.md#Tailwind CSS v4"
+    output: "Documents/T003_tailwind_daisyui_setup.md"
+    acceptance_criteria:
+      - "`@tailwindcss/vite` がAstro configに設定されている"
+      - "CSSで `@import \"tailwindcss\";` と `@plugin \"daisyui\";` が読み込まれている"
+      - "daisyUIのクラスが画面に反映される"
+    completed_at: "2026-06-19"
+
+  - id: "T004"
+    name: "Layout/Header/Footer作成"
+    description: "全ページ共通のLayout、Header、Footerを作る。ナビゲーションはトップとCoffee Logだけに絞り、初期MVPの構造を明確にする。"
+    type: "task"
+    priority: "P0"
+    status: "pending"
+    owner: "tomoyamorita"
+    estimated_hours: 2.0
+    dependencies:
+      - "T003"
+    command: "SKL_plc_03_construction"
+    command_template_ref: "TPL_coding_agent"
+    origin: "Context/04_product_scope_content_model.md#Initial Directory Shape"
+    output: "Documents/T004_layout_navigation.md"
+    acceptance_criteria:
+      - "`Layout.astro`, `Header.astro`, `Footer.astro` が作られている"
+      - "トップページとCoffee Logへの導線がある"
+      - "スマホ幅でもナビゲーションが破綻しない"
+
+  - id: "T005"
+    name: "Coffee Log Content Collection設計"
+    description: "`coffee-log` Content Collectionを作り、MDX記事を型付きで管理できるようにする。まずは1から3件のサンプル記事で一覧表示に必要なデータを揃える。"
+    type: "task"
+    priority: "P0"
+    status: "pending"
+    owner: "tomoyamorita"
+    estimated_hours: 2.0
+    dependencies:
+      - "T002"
+    command: "SKL_plc_03_construction"
+    command_template_ref: "TPL_coding_agent"
+    origin: "Context/04_product_scope_content_model.md#Content Schema Draft"
+    output: "Documents/T005_content_collection.md"
+    acceptance_criteria:
+      - "`src/content.config.ts` に `coffee-log` collectionが定義されている"
+      - "サンプルMDX記事が1件以上ある"
+      - "`draft: true` を公開一覧から除外できる設計になっている"
+
+  - id: "T006"
+    name: "トップページMVP実装"
+    description: "名刺QRから見せる入口として、サイト紹介、最近のおすすめコーヒー、好きなお店3選、最新Coffee Logへの導線を持つトップページを作る。"
+    type: "task"
+    priority: "P0"
+    status: "pending"
+    owner: "tomoyamorita"
+    estimated_hours: 2.0
+    dependencies:
+      - "T004"
+      - "T005"
+    command: "SKL_plc_03_construction"
+    command_template_ref: "TPL_coding_agent"
+    origin: "Context/04_product_scope_content_model.md#Top Page Sections"
+    output: "Documents/T006_homepage_mvp.md"
+    acceptance_criteria:
+      - "トップページにMVPの主要セクションが表示される"
+      - "Coffee Log一覧への導線がある"
+      - "文章量が少なくても未完成に見えにくい構成になっている"
+
+  - id: "T007"
+    name: "Coffee Log一覧・詳細ページ実装"
+    description: "`/coffee/` でCoffee Log一覧、`/coffee/[slug]/` で詳細ページを表示する。日付順表示、タグ、戻る導線を実装する。"
+    type: "task"
+    priority: "P0"
+    status: "pending"
+    owner: "tomoyamorita"
+    estimated_hours: 2.5
+    dependencies:
+      - "T004"
+      - "T005"
+    command: "SKL_plc_03_construction"
+    command_template_ref: "TPL_coding_agent"
+    origin: "Context/04_product_scope_content_model.md#MVP Pages"
+    output: "Documents/T007_coffee_pages.md"
+    acceptance_criteria:
+      - "`/coffee/` に記事一覧が表示される"
+      - "`/coffee/[slug]/` にMDX本文が表示される"
+      - "draft記事が公開一覧に出ない"
+
+  - id: "T008"
+    name: "レスポンシブ確認・ビルド検証"
+    description: "デスクトップ幅とスマホ幅で主要ページを確認し、`npm run build` を通す。公開前に壊れたUIやビルドエラーを潰す。"
+    type: "task"
+    priority: "P0"
+    status: "pending"
+    owner: "tomoyamorita"
+    estimated_hours: 1.5
+    dependencies:
+      - "T006"
+      - "T007"
+    command: "SKL_plc_03_construction"
+    command_template_ref: "TPL_review_agent"
+    origin: "Context/05_constraints_risks_sources.md#Verification Plan"
+    output: "Documents/T008_build_responsive_check.md"
+    acceptance_criteria:
+      - "`npm run build` が成功する"
+      - "トップ、一覧、詳細がスマホ幅とデスクトップ幅で確認されている"
+      - "公開前に残すべき既知課題が整理されている"
+
+  - id: "T009"
+    name: "GitHub/Cloudflare公開準備"
+    description: "README、公開手順、Cloudflare Pages設定値、公開前チェックリストを整える。GitHub作成、push、Cloudflare接続、外部公開は本人承認後にのみ実行する。"
+    type: "task"
+    priority: "P1"
+    status: "pending"
+    owner: "tomoyamorita"
+    estimated_hours: 1.5
+    dependencies:
+      - "T008"
+    command: "SKL_plc_03_construction"
+    command_template_ref: "TPL_operation_agent"
+    origin: "Context/03_technical_stack_official_context.md#Cloudflare Pages"
+    output: "Documents/T009_publish_readiness.md"
+    acceptance_criteria:
+      - "READMEにローカル起動とビルド手順がある"
+      - "Cloudflare PagesのBuild commandとBuild directoryが明記されている"
+      - "外部公開前の本人承認ポイントが明文化されている"
+
+stage2_seed_themes:
+  - "初心者向けの環境構築とコマンド確認"
+  - "Astroプロジェクトの最小起動"
+  - "Tailwind CSS v4 + daisyUI導入"
+  - "トップページMVP作成"
+  - "Coffee LogのContent Collection設計"
+  - "MDXサンプル記事作成"
+  - "Coffee Log一覧・詳細ページ作成"
+  - "画像管理と軽量化ルール"
+  - "ローカル検証とビルド確認"
+  - "GitHub連携とCloudflare Pages公開準備"
+  - "公開後のCloudflare Web Analytics導入"
+
+progress:
+  total: 9
+  completed: 3
+  percent: 33
+
+summary:
+  task_count: 9
+  p0_tasks:
+    - "T001"
+    - "T002"
+    - "T003"
+    - "T004"
+    - "T005"
+    - "T006"
+    - "T007"
+    - "T008"
+  p1_tasks:
+    - "T009"
+  p2_tasks: []
+  next_action: "SKL_plc_04_operation"
+
+external_execution_review:
+  checked_at: "2026-06-17"
+  result: "all_tasks_internal_with_external_action_gates"
+  note: "全タスクはこのLayer内で実行可能。ただしT009に含まれるGitHub作成、git push、Cloudflare Pages接続、外部公開、Cloudflare Web Analytics導入は本人承認後にのみ実行する。"
+
+refactoring_log:
+  - date: "2026-06-17"
+    event: "collection_initialized"
+    note: "Stage 1 Collection only. Concrete task decomposition will be created in Stage 2 Inception after Mob Checkpoint approval."
+  - date: "2026-06-17"
+    event: "inception_completed"
+    note: "User approved single-layer sequential decomposition. Created 9 tasks from environment setup through publish readiness; no SubLayer generated because MVP is a single-site beginner workflow."
+  - date: "2026-06-17"
+    event: "construction_agents_generated"
+    note: "Generated Full-tier Agent definitions for all 9 command-enabled tasks. Kept external action gates for GitHub, push, Cloudflare, public deployment, analytics, and domain setup."
+  - date: "2026-06-17"
+    event: "construction_approved"
+    note: "User approved generated Agent definitions. Stage 4 Operation can start with T001."
+  - date: "2026-06-17"
+    event: "work_note_created"
+    note: "Created Documents/work_notes.md as a running note for the MVP build process and linked it from context.yaml."
+  - date: "2026-06-17"
+    event: "task_completed"
+    task_id: "T001"
+    note: "Environment check completed. Node v22.22.2, npm 10.9.7, and Apple Git 2.50.1 are available. Provisional project path set to /Users/tomoyamorita/Projects/ai-plc/workspaces/meishi-coffee."
+  - date: "2026-06-17"
+    event: "task_scope_changed"
+    task_id: "T002"
+    note: "User requested Docker-based setup to avoid polluting the local Mac. Updated T002 to use node:22-bookworm, docker compose, and a named volume for node_modules. Created Documents/T002_docker_setup_guide.md."
+  - date: "2026-06-17"
+    event: "task_completed"
+    task_id: "T002"
+    note: "Reviewed user-created Docker Astro project at /Users/tomoyamorita/Projects/ai-plc/workspaces/meishi-coffee. docker compose up works, localhost:4321 returns the edited Astro page, and dependencies are stored in Docker named volume meishi-coffee_node_modules. Recorded npm audit high findings as a pre-publish follow-up."
+  - date: "2026-06-19"
+    event: "task_completed"
+    task_id: "T003"
+    note: "Reviewed Tailwind CSS v4 and daisyUI setup in /Users/tomoyamorita/Projects/ai-plc/workspaces/meishi-coffee. @tailwindcss/vite is configured in astro.config.mjs, global.css imports Tailwind and daisyUI, index.astro uses card/badge/button primitives, docker build succeeds, and npm audit --audit-level=high exits cleanly with only low severity findings."

@@ -1,0 +1,90 @@
+version: "1.0"
+scope_id: "L-0617"
+scope_name: "コーヒーホームページMVP自作"
+status: active
+workflow_depth: standard
+
+goal:
+  description: "ホームページ作成と関連技術スタックが初めての状態から、Astroを中心にしたコーヒー個人サイトMVPを自力で作成できるよう、作業手順、学習順、実装スコープ、検証方法をAI-PLCで段階化する。MVPはトップページとCoffee Logを対象にし、最終的にCloudflare Pagesで無料サブドメイン公開できる状態を目指す。"
+  success_criteria:
+    - "Astro + TypeScript + MDX + Astro Content Collections + Tailwind CSS + daisyUI の採用理由と導入順が説明できる"
+    - "トップページ、Coffee Log一覧、Coffee Log詳細のMVP範囲が明確になっている"
+    - "初学者でも迷いにくい順番で、環境構築、最小ページ作成、MDX記事追加、スタイル適用、ローカル確認、GitHub連携、Cloudflare Pages公開まで分解されている"
+    - "Headless CMS、DB、店舗マップ、検索、RSS、認証、Next.jsなどをMVPから外す判断理由が記録されている"
+    - "各ステップでユーザー自身が確認するチェックポイントと、Codexに任せる範囲が区別されている"
+    - "外部公開、GitHub push、Cloudflare設定、独自ドメイン設定は本人の明示判断なしに実行しない"
+
+mode: direct
+owner: "tomoyamorita"
+deadline: "2026-07-17"
+
+parent_scope: null
+sub_agent_scopes: []
+
+context_cascade:
+  global_immutable:
+    - "MVPはトップページ + Coffee Logに限定する"
+    - "採用スタックはAstro + TypeScript + MDX + Content Collections + Tailwind CSS + daisyUIを第一候補にする"
+    - "ホスティングはCloudflare Pages、解析はCloudflare Web Analyticsを第一候補にする"
+    - "初学者向けに、理解しながら自力で作る順番を優先する"
+    - "外部公開、GitHub push、Cloudflare設定、独自ドメイン設定は本人承認が必要"
+  overridable:
+    - "site_name"
+    - "repository_name"
+    - "visual_theme"
+    - "content_categories"
+    - "deployment_target"
+    - "deadline"
+    - "cost_limit"
+    - "domain_timing"
+  local_only:
+    - "2026-06-17 ChatGPT conversation context"
+    - "2026-06-17 official documentation snapshot"
+    - "this Collection scope's beginner-oriented planning assumptions"
+
+extensions:
+  - brand
+
+sync_targets:
+  - type: notion_db
+    target_url: "https://www.notion.so/a4df4cf09a5841a4817a284f76b8d9f0"
+    mapping:
+      title: "タスク名"
+      status: "ステータス"
+      output: "成果物"
+    status_map:
+      pending: "未着手"
+      in_progress: "進行中"
+      completed: "完了"
+      blocked: "ブロック"
+    auto_create: true
+    sync_direction: push
+
+collection:
+  stage: "Collection"
+  generated_at: "2026-06-17"
+  scope_type: "pipeline_init"
+  focus_strategy:
+    primary: "tech_lead"
+    secondary:
+      - "developer"
+      - "content_strategist"
+  depth_reason: "目的は単一サイトのMVPだが、初学者向けの学習順、環境構築、コンテンツ設計、実装、デプロイ、検証に分解が必要。SubLayer再帰は不要なためstandardと判定した。"
+  mode_reason: "今回の目的は一度きりのMVP作成計画と実装支援であり、量産用プラットフォーム構築ではないためdirect modeとした。"
+  registry:
+    project_registry_sqlite: "skipped"
+    reason: "ワークスペース内に利用可能なAI-PLC projects SQLite DBが見つからなかったため。Notion Project Registryへの直接登録は、このセッションで利用可能なNotion登録ツールがないため未実行。"
+  wiki_ingest:
+    status: "skipped"
+    reason: "ワークスペース内に.notion/wiki/index.mdが存在せず、templates/wikiのみ確認されたため。収集内容はContext Storeに格納した。"
+  external_sync_discovery:
+    searched_keywords:
+      - "タスク"
+      - "バックログ"
+      - "Backlog"
+      - "Todo"
+      - "Project"
+      - "database"
+      - "sqlite"
+    result: "ワークスペースローカルのタスク管理DBまたはAI-PLC SQLite DBは該当なし"
+    setting: "RUL_plc_systemのデフォルトAI-PLC Tasks DBをsync_targetsに設定。後続Stageでbacklog作成後にpush対象にできるようにした。"
