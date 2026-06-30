@@ -13,7 +13,7 @@
 | 種類 | 説明 | 必須出力 | Agentテンプレート |
 | --- | --- | --- | --- |
 | research | 調査・分析・リサーチ | 分析レポート + 知見 | TPL_research_agent |
-| implementation | DB作成・システム構築・実装 | Databaseまたは動くシステム | TPL_implementation_agent |
+| implementation | DB設計・システム構築・実装 | ローカルDB、外部DB、成果物ファイル、または動くシステム | TPL_implementation_agent |
 | content | 記事執筆・プレゼン・ドキュメント | 完成コンテンツ | TPL_content_agent |
 | operation | 量産実行・パターン適用 | 量産成果物 + Evalデータ | TPL_operation_agent |
 | validation | 検証・評価・レビュー | 検証結果 + 改善計画 | （専用なし—researchまたはimplementationのPhaseとして組み込み） |
@@ -36,24 +36,24 @@
 > ⚙️ **原則3: 出力エンティティの明確化**
 
 
-  Notionで成果物を作成する際、以下を区別：
+  成果物を作成する際、以下を区別：
 
 
-  「Kanbanビュー」→ **Database** + Boardビュー（× ページに説明文）
+  「Kanbanビュー」→ **ローカルDB/外部DB** + Board相当ビュー（× 説明文だけ）
 
 
-  「進捗管理」→ **Database** + 適切なプロパティ（× ページ内テーブル）
+  「進捗管理」→ **DBまたはYAML Backlog** + 適切なフィールド（× 静的な表だけ）
 
 
-  「テンプレート」→ **Page**（テンプレート形式）
+  「テンプレート」→ **Markdown/YAMLファイル**（テンプレート形式）
 
 
-  「ガイド」→ **Page**（本文あり）
+  「ガイド」→ **Markdownドキュメント**（本文あり）
 
 > ⚙️ **原則4: 「動くシステム」ルール（implementationタスク必須）**
 
 
-  implementationタイプのタスクは、実際に動くDatabase/システムを生み出さなければ完了としない。
+  implementationタイプのタスクは、実際に動くDB/システム/成果物ファイルを生み出さなければ完了としない。
 
 
   設計書やスキーマ定義を書いただけでは「完了」にならない。
@@ -78,7 +78,7 @@
 | タスク種類 | 検証タイミング | 検証担当 |
 | --- | --- | --- |
 | research | 分析レポート完成後 | AIセルフチェック + Mob Checkpoint |
-| implementation | DB/システム構築後 | AIテスト実行 + Mob確認 |
+| implementation | DB/システム/成果物構築後 | AIテスト実行 + Mob確認 |
 | content | 執筆完了後 | AIセルフレビュー + Mobレビュー |
 | operation | 各量産サイクル後 | Evalデータで自動判定 |
 | validation | 検証自体が成果物 | —（検証タスクには不要） |

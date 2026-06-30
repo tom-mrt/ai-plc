@@ -136,9 +136,9 @@
 
 | 環境 | 計画 | 実行 | 成果物 |
 | --- | --- | --- | --- |
-| Notion | PJ配下にコード生成計画ページ作成 | チャットベースで逐次実行 | Documentsに保存 |
 | Claude Code | aidlc-docs/construction/plans/ に計画ファイル | Task/Subagentとして並列実行 | ワークスペースルートにコード |
 | Cursor | .cursor/rules/ に計画ルール | Agent Modeで実行 | ワークスペースルートにコード |
+| Codex | Documents/ に計画ファイル | Codex thread / sub-agentで実行 | ワークスペースルートにコード |
 
 ---
 

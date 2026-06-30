@@ -1,6 +1,7 @@
 # AI-PLC DB Sync
 
-AI-PLC DBをローカルの正本として扱い、`projects` / `tasks` テーブルを Notion と双方向同期する。
+AI-PLC DBをローカルの正本として扱い、`projects` / `tasks` テーブルと
+`intent.yaml` / `backlog.yaml` / `context.yaml` の差分を確認・同期するための補助スキル。
 
 既定配置:
 - Claude Code install: `.claude/db/ai_plc.db`
@@ -9,19 +10,21 @@ AI-PLC DBをローカルの正本として扱い、`projects` / `tasks` テー�
 
 ## When to Use
 
-- 「DBを同期して」「NotionのDBをPullして」→ pull
-- 「タスクをNotionに反映して」「Push」→ push
-- 「DB同期状態を確認して」「syncステータス」→ status
-- 「DB同期」→ sync (双方向)
-- プロジェクトやタスクをローカルで追加・更新した後にNotionへ反映したいとき
-- Notion側の最新データをローカルに取り込みたいとき
+- 「AI-PLC DBを同期して」「ローカルDBを更新して」→ sync
+- 「YAMLとの差分を確認して」「syncステータス」→ status
+- 「外部連携向けに差分を確認して」→ status / dry-run
+- プロジェクトやタスクをローカルファイルで追加・更新した後にSQLiteへ反映したいとき
+- 外部DB・Issue tracker・Webhookなどへ渡す前に、ローカル正本との差分を確認したいとき
 
 ## Commands
 
+利用環境に `db/sync.py` がある場合のみ実行する。未導入の環境では、手動で
+`intent.yaml` / `backlog.yaml` / `context.yaml` とAI-PLC SQLite DBの差分を確認する。
+
 ```bash
-python3 .claude/db/sync.py pull              # Notion → ローカル（Claude Code例）
-python3 .claude/db/sync.py push              # ローカル → Notion（Claude Code例）
-python3 .claude/db/sync.py sync              # 双方向 (pull → push)
+python3 .claude/db/sync.py pull              # ローカルファイル → SQLite（Claude Code例）
+python3 .claude/db/sync.py push              # SQLite → ローカルファイル（Claude Code例）
+python3 .claude/db/sync.py sync              # 双方向差分確認と反映
 python3 .claude/db/sync.py status            # 差分プレビュー
 python3 .claude/db/sync.py pull --dry-run    # dry-run (変更なし)
 python3 .claude/db/sync.py push --dry-run    # dry-run (変更なし)
@@ -29,33 +32,59 @@ python3 .claude/db/sync.py push --dry-run    # dry-run (変更なし)
 
 ## Prerequisites
 
-- `NOTION_API_TOKEN` 環境変数が設定済みであること
-- 利用環境のAI-PLC DBが存在すること（Claude Code例: なければ `python3 .claude/db/init_db.py --import` で作成）
+- 利用環境のAI-PLC DBが存在すること
+- `intent.yaml` / `backlog.yaml` / `context.yaml` がローカル正本として読めること
+- 外部連携を行う場合は、各連携先の adapter / CLI / MCP が別途利用可能であること
 
 ## Sync Logic
 
-- **Pull**: Notion 側を query → `notion_last_edited` で差分検出 → AI-PLC DBを更新
-- **Push**: `updated_at > last_sync_at` の行を検出 → Notion API で PATCH/POST
-- **Conflict**: Pull時にローカルも変更されている行は CONFLICT としてスキップ（安全側）
+- **Pull**: ローカルYAML/Markdownの正本を読み、SQLiteの `projects` / `tasks` を更新
+- **Push**: SQLite側の差分をローカルYAML/Markdownに反映
+- **Status**: 反映前に差分を表示し、意図しない上書きを防ぐ
+- **Conflict**: 同一項目が双方で変更されている場合は CONFLICT としてスキップし、手動判断を求める
+
+## External Integrations
+
+外部連携は `intent.yaml` の `sync_targets` に宣言された場合だけ扱う。未実装の連携先を
+実装済みとして扱わず、status / dry-run で差分を確認してから、利用可能な adapter がある
+連携先だけに push する。
+
+例:
+
+```yaml
+sync_targets:
+  - type: github_issues
+    target: "owner/repo"
+    sync_direction: push
+  - type: linear
+    target: "TEAM"
+    sync_direction: push
+  - type: external_db
+    target: "local-or-remote-db-alias"
+    sync_direction: push
+  - type: custom_webhook
+    target: "webhook-alias"
+    sync_direction: push
+```
 
 ## Data Model
 
-| テーブル | ローカルDB | 同期先Notion DB | 用途 |
-| --- | --- | --- | --- |
-| projects | AI-PLC DB | AI-PLC Projects (`8f5680ac-...`) | プロジェクト管理 |
-| tasks | AI-PLC DB | AI-PLC Tasks (`a4df4cf0-...`) | タスク管理 |
+| テーブル | ローカルDB | 用途 |
+| --- | --- | --- |
+| projects | AI-PLC SQLite DB | プロジェクト管理 |
+| tasks | AI-PLC SQLite DB | タスク管理 |
 
 ## Typical Workflow
 
-1. `status` で差分を確認
-2. `pull` でNotion側の最新を取得
-3. ローカルで `plc_query.py` を使って編集
-4. `push` でNotionに反映
+1. `status` でローカルファイルとSQLiteの差分を確認
+2. 必要に応じて `pull --dry-run` または `push --dry-run` を実行
+3. 差分が妥当なら `sync` を実行
+4. 外部連携が必要な場合は、利用可能な adapter を確認してから個別に push
 
 ## Related Files
 
 - `db/ai_plc.db` — SQLite DB本体
 - `db/init_db.py` — スキーマ作成 + マイグレーション
 - `db/plc_query.py` — ローカルクエリヘルパー
-- `db/sync.py` — 同期エンジン
+- `db/sync.py` — 同期エンジン（導入環境のみ）
 - `db/README.md` — ドキュメント
